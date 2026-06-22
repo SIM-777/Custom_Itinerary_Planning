@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom NYC Itinerary Planning Service</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #FAFAF7;
+    --cream-mid: #F5F2EB;
+    --cream-card: #FBF8F3;
+    --white: #ffffff;
+    --border: #E8E4DA;
+    --border-light: #F0EDE4;
+    --ink: #1A1A18;
+    --ink-mid: #3A3A36;
+    --ink-muted: #5A5A56;
+    --ink-faint: #6B6B66;
+    --accent: #D4502A;
+    --accent-light: #FFF0EB;
+    --accent-green-bg: #E8F4ED;
+    --accent-green-text: #1A6B42;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Nunito Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--white);
+    border-bottom: 2px solid var(--border);
+    padding: 4.5rem 2rem 3.5rem;
+    text-align: center;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    background: var(--accent-green-bg);
+    color: var(--accent-green-text);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3rem);
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.18;
+    margin-bottom: 1rem;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-title em { color: var(--accent); font-style: italic; }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--ink-muted);
+    max-width: 540px;
+    margin: 0 auto 2rem;
+    line-height: 1.7;
+  }
+
+  .hero-cta {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff !important;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 900;
+    padding: .95rem 2.25rem;
+    border-radius: 8px;
+    text-decoration: none !important;
+    letter-spacing: .02em;
+    box-shadow: 0 4px 16px rgba(212,80,42,0.3);
+  }
+
+  .hero-cta:hover { background: #BC4424; }
+
+  .hero-price-note {
+    margin-top: .9rem;
+    font-size: 13px;
+    color: var(--ink-faint);
+    font-weight: 700;
+  }
+
+  /* ── SECTION WRAPPER ── */
+  .section {
+    padding: 3.5rem 2rem;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+
+  .section-kicker {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: .75rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+    font-weight: 700;
+    color: var(--ink);
+    text-align: center;
+    margin-bottom: .75rem;
+    line-height: 1.25;
+  }
+
+  .section-sub {
+    font-size: .975rem;
+    color: var(--ink-muted);
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+  }
+
+  /* ── WHAT'S INCLUDED ── */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 14px;
+  }
+
+  .feat {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.4rem 1.4rem 1.15rem;
+  }
+
+  .feat-check {
+    font-size: 20px;
+    color: var(--accent);
+    margin-bottom: .6rem;
+    font-weight: 900;
+  }
+
+  .feat-title {
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--ink);
+    margin-bottom: .4rem;
+  }
+
+  .feat-body {
+    font-size: 13.5px;
+    color: var(--ink-muted);
+    line-height: 1.6;
+  }
+
+  .recs-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: .65rem;
+  }
+
+  .rec-tag {
+    background: var(--accent-green-bg);
+    color: var(--accent-green-text);
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  /* ── HOW IT WORKS / STEPS ── */
+  .steps-section {
+    background: var(--white);
+    border-top: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
+    scroll-margin-top: 20px;
+  }
+
+  .steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 1rem;
+  }
+
+  .step {
+    display: flex;
+    gap: 1.25rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border-light);
+    position: relative;
+  }
+
+  .step:last-child { border-bottom: none; }
+
+  .step-num {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .step-content { flex: 1; padding-top: .15rem; }
+
+  .step-title {
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--ink);
+    margin-bottom: .4rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .step-free-tag {
+    font-size: 10.5px;
+    font-weight: 900;
+    background: var(--accent-green-bg);
+    color: var(--accent-green-text);
+    padding: 3px 10px;
+    border-radius: 12px;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+  }
+
+  .step-body {
+    font-size: 14px;
+    color: var(--ink-muted);
+    line-height: 1.7;
+  }
+
+  .step-body strong { color: var(--ink); font-weight: 700; }
+
+  .step-cta-inline {
+    display: inline-block;
+    margin-top: .75rem;
+    background: var(--accent);
+    color: #fff !important;
+    font-size: 13px;
+    font-weight: 900;
+    padding: .55rem 1.25rem;
+    border-radius: 7px;
+    text-decoration: none !important;
+  }
+
+  .step-cta-inline:hover { background: #BC4424; }
+
+  /* ── PRICE BLOCK ── */
+  .price-block {
+    background: var(--ink);
+    border-radius: 14px;
+    padding: 2.25rem 2rem;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    flex-wrap: wrap;
+  }
+
+  .price-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .price-text {
+    font-size: 14px;
+    color: #B4B2A9;
+    line-height: 1.65;
+  }
+
+  .price-text strong {
+    display: block;
+    font-size: 16px;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .main-cta-wrap {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+
+  .main-cta {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff !important;
+    border: none;
+    border-radius: 10px;
+    padding: 1.15rem 2.5rem;
+    font-size: 17px;
+    font-weight: 900;
+    font-family: 'Nunito Sans', sans-serif;
+    cursor: pointer;
+    text-decoration: none !important;
+    letter-spacing: .02em;
+    box-shadow: 0 4px 18px rgba(212,80,42,0.38);
+    transition: background .15s, box-shadow .15s;
+  }
+
+  .main-cta:hover {
+    background: #BC4424;
+    box-shadow: 0 6px 24px rgba(212,80,42,0.48);
+  }
+
+  .sub-note {
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    margin-top: .85rem;
+    font-weight: 700;
+  }
+
+  /* ── REVIEWS ── */
+  .reviews-section { background: var(--cream-mid); }
+
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+  }
+
+  .review-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.25rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+  }
+
+  .review-stars {
+    color: #E8A020;
+    font-size: 15px;
+    letter-spacing: 2px;
+  }
+
+  .review-text {
+    font-size: 13.5px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+    flex: 1;
+  }
+
+  .review-author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-top: 1px solid var(--border-light);
+    padding-top: .75rem;
+  }
+
+  .review-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .review-name { font-size: 13px; font-weight: 900; color: var(--ink); }
+
+  .review-meta {
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-top: 1px;
+    line-height: 1.5;
+  }
+
+  /* ── FAQ ── */
+  .faq-item {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1rem 1.4rem;
+    margin-bottom: 10px;
+  }
+
+  .faq-q {
+    font-size: 14.5px;
+    font-weight: 900;
+    color: var(--ink);
+    margin-bottom: .4rem;
+  }
+
+  .faq-a {
+    font-size: 13.5px;
+    color: var(--ink-muted);
+    line-height: 1.65;
+  }
+
+  /* ── FINAL CTA BAND ── */
+  .final-band {
+    background: var(--accent-light);
+    border-top: 3px solid var(--accent);
+    text-align: center;
+    padding: 3.5rem 2rem;
+  }
+
+  .final-band .section-title { margin-bottom: .5rem; }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 12px;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--border);
+    background: var(--white);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .hero { padding: 3rem 1.25rem 2.5rem; }
+    .section { padding: 2.75rem 1.25rem; }
+    .price-block { padding: 1.5rem; gap: 1rem; }
+    .price-num { font-size: 3rem; }
+    .step { gap: .9rem; }
+    .step-num { width: 38px; height: 38px; font-size: 15px; }
+    .final-band { padding: 2.75rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Custom NYC Itinerary Planning</div>
+  <h1 class="hero-title">An Itinerary Built Around <em>Your</em> Trip — Not Someone Else's</h1>
+  <p class="hero-sub">Generic travel guides give you someone else's trip. We design yours — around your dates, accommodation, interests, budget, and pace — for one flat fee of $20.</p>
+  <a href="#order" class="hero-cta">Start My Custom Itinerary →</a>
+  <p class="hero-price-note">Step 1 is free &nbsp;·&nbsp; Pay only if you decide to proceed</p>
+</div>
+
+<!-- WHAT'S INCLUDED -->
+<div class="section">
+  <p class="section-kicker">What's Included</p>
+  <h2 class="section-title">A Complete, Personal Plan — Not a Template</h2>
+  <p class="section-sub">Instead of spending hours researching attractions, neighborhoods, restaurants, and logistics, you receive a complete day-by-day plan built specifically for your trip.</p>
+
+  <div class="features">
+    <div class="feat">
+      <div class="feat-check">&#10003;</div>
+      <div class="feat-title">Fully Customised Itinerary</div>
+      <div class="feat-body">Built around your travel dates, arrival and departure times, accommodation location, interests, budget, and travel preferences.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-check">&#10003;</div>
+      <div class="feat-title">Delivered Within 24–36 Hours</div>
+      <div class="feat-body">Receive your personalised itinerary within 24–36 hours of payment, once we've confirmed the details with you.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-check">&#10003;</div>
+      <div class="feat-title">Unlimited Revisions Until Your Trip</div>
+      <div class="feat-body">Plans change? Want to add an attraction? We'll revise your itinerary as many times as needed before you travel.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-check">&#10003;</div>
+      <div class="feat-title">Personalised Recommendations</div>
+      <div class="feat-body">Tailored picks based on your interests, not a generic list.
+        <div class="recs-row">
+          <span class="rec-tag">Restaurants</span>
+          <span class="rec-tag">Cafés</span>
+          <span class="rec-tag">Observation decks</span>
+          <span class="rec-tag">Hidden gems</span>
+          <span class="rec-tag">Neighborhoods</span>
+          <span class="rec-tag">Shopping</span>
+          <span class="rec-tag">Local experiences</span>
+        </div>
+      </div>
+    </div>
+    <div class="feat">
+      <div class="feat-check">&#10003;</div>
+      <div class="feat-title">Optimised Daily Routes</div>
+      <div class="feat-body">Each day is organised logically to minimise unnecessary travel, so you spend more time experiencing the city and less time commuting.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-check">&#10003;</div>
+      <div class="feat-title">Built For Any Trip Length</div>
+      <div class="feat-body">Visiting for 3 days, 5 days, 7 days, or longer — we'll help you make the most of every single day in the city.</div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW TO ORDER -->
+<div class="steps-section" id="order">
+  <div class="section">
+    <p class="section-kicker">How It Works</p>
+    <h2 class="section-title">Three Simple Steps to Your Custom Itinerary</h2>
+    <p class="section-sub">No upfront payment, no commitment — just fill out a short form and we'll take it from there.</p>
+
+    <div class="steps-list">
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Fill Out the Trip Planning Form <span class="step-free-tag">Free — No Charge</span></div>
+          <div class="step-body">Tell us about your trip — your travel dates, accommodation, interests, budget, and travel style. It takes a few minutes and there's <strong>no cost or obligation</strong> at this stage.</div>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSceqs3EuBZ4Omjg7MWejzqHiVzlsq5MOt1bS7mPqNLgdnNDrw/viewform?usp=preview" class="step-cta-inline" target="_blank" >Fill Out the Form →</a>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">We Review &amp; Follow Up by Email</div>
+          <div class="step-body">We'll review your requirements and reply with a follow-up email <strong>summarising your itinerary</strong> and asking for any further clarification if needed. This email will also include your <strong>payment link</strong>. If you decide to proceed, you can pay securely at that point — and we'll release your final, fully customised itinerary.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Revisions &amp; Follow-Up — All By Email</div>
+          <div class="step-body">Plans change, and that's fine. Any revisions, questions, or follow-up requests after delivery are handled directly over email — simple, direct, and unlimited until your trip.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="price-block">
+      <div class="price-num">$20</div>
+      <div class="price-text">
+        <strong>One-time fee. No subscriptions.</strong>
+        You only pay once we've confirmed your itinerary details and you're ready to proceed. The lowest itinerary planning price on the internet, with unlimited revisions included.
+      </div>
+    </div>
+
+    <div class="main-cta-wrap">
+      <a href="#" class="main-cta">Fill Out the Free Form to Get Started →</a>
+      <p class="sub-note">No charge to start &nbsp;·&nbsp; Pay only if you proceed &nbsp;·&nbsp; Delivered in 24–36 hours after payment</p>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEWS -->
+<div class="reviews-section">
+  <div class="section">
+    <p class="section-kicker">Traveler Feedback</p>
+    <h2 class="section-title">What Travelers Are Saying</h2>
+    <p class="section-sub">Real trips, real feedback, from travelers who used our custom itinerary service.</p>
+
+    <div class="reviews-grid">
+
+      <div class="review-card">
+        <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="review-text">"We had 4 days in NYC with two kids (ages 7 and 10) and no idea where to start. The itinerary we got was incredibly specific — it even noted that the Staten Island Ferry is free and the best spot to stand for Statue of Liberty photos. Every morning I just opened the PDF and knew exactly where we were headed. Saved us hours of Googling."</div>
+        <div class="review-author">
+          <div class="review-avatar">SR</div>
+          <div>
+            <div class="review-name">Sarah R.</div>
+            <div class="review-meta">Traveled from Manchester, UK &nbsp;·&nbsp; Family of 4 &nbsp;·&nbsp; April 2025</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="review-text">"I was skeptical about paying for an itinerary when there's so much free stuff online — but the free stuff is all the same generic lists. This felt like getting advice from a friend who actually lives there. They routed our Day 2 through the West Village for morning coffee before the High Line, which we never would've thought of. The neighborhood flow made every day feel effortless."</div>
+        <div class="review-author">
+          <div class="review-avatar">JM</div>
+          <div>
+            <div class="review-name">James M.</div>
+            <div class="review-meta">Traveled from Toronto, Canada &nbsp;·&nbsp; Couple &nbsp;·&nbsp; October 2024</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="review-text">"I asked for a revision because we decided to skip the Statue of Liberty and add more time in Brooklyn. Got the updated plan back within a few hours, no fuss at all. The final itinerary had us doing DUMBO in the morning before the crowds arrived — genuinely the best tip of the whole trip. For $20 this is a complete no-brainer."</div>
+        <div class="review-author">
+          <div class="review-avatar">PK</div>
+          <div>
+            <div class="review-name">Priya K.</div>
+            <div class="review-meta">Traveled from Bangalore, India &nbsp;·&nbsp; Solo traveler &nbsp;·&nbsp; February 2025</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="review-text">"My husband and I had 7 days and wanted a mix of the big landmarks and some local neighborhoods — not just Times Square and Central Park. The itinerary gave us a full day in Astoria and another in the Lower East Side with specific restaurant suggestions. Ended up eating at Russ &amp; Daughters and Xi'an Famous Foods on the same afternoon. Perfect."</div>
+        <div class="review-author">
+          <div class="review-avatar">LC</div>
+          <div>
+            <div class="review-name">Laura C.</div>
+            <div class="review-meta">Traveled from Sydney, Australia &nbsp;·&nbsp; Couple &nbsp;·&nbsp; January 2025</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="review-text">"I mentioned in the questionnaire that I'm vegetarian and really into street art. The plan came back with a Bushwick Collective morning, a stop at by CHLOE for lunch, and the Whitney Museum in the afternoon. None of that would've appeared on any standard NYC list. That level of personalisation is what you're paying for."</div>
+        <div class="review-author">
+          <div class="review-avatar">DT</div>
+          <div>
+            <div class="review-name">Daniel T.</div>
+            <div class="review-meta">Traveled from Berlin, Germany &nbsp;·&nbsp; Solo traveler &nbsp;·&nbsp; March 2025</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="review-text">"We were a group of five friends doing a bachelorette trip and needed something that balanced sightseeing with nightlife. The itinerary nailed it — Brooklyn Bridge in the morning, rooftop bar in the evening, comedy show one night, jazz club another. It even flagged that we needed to book Comedy Cellar tickets in advance. Super thoughtful."</div>
+        <div class="review-author">
+          <div class="review-avatar">AN</div>
+          <div>
+            <div class="review-name">Aisha N.</div>
+            <div class="review-meta">Traveled from Dubai, UAE &nbsp;·&nbsp; Group of 5 &nbsp;·&nbsp; May 2025</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="section">
+  <p class="section-kicker">Good to Know</p>
+  <h2 class="section-title">Frequently Asked Questions</h2>
+
+  <div style="max-width: 680px; margin: 2rem auto 0;">
+
+    <div class="faq-item">
+      <div class="faq-q">Do I pay anything to fill out the form?</div>
+      <div class="faq-a">No. Filling out the trip planning form is completely free with no obligation. You only pay if you decide to proceed after reviewing our follow-up email and itinerary summary.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How long does it take to get my itinerary?</div>
+      <div class="faq-a">Once payment is received, your fully customised itinerary is delivered within 24–36 hours.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I make changes after I receive my itinerary?</div>
+      <div class="faq-a">Yes. Revisions are unlimited and free up until your trip date. Just email us with your requested changes.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How do I communicate with you during the process?</div>
+      <div class="faq-a">Everything — clarifications, the payment link, your final itinerary, and any revisions — is handled over email, so you'll always have a written record of your plan.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What if I'm not happy with the itinerary summary before paying?</div>
+      <div class="faq-a">No problem — let us know in your reply and we'll clarify or adjust before you commit to anything. You're only charged once you're ready to proceed.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FINAL CTA -->
+<div class="final-band">
+  <p class="section-kicker">Ready When You Are</p>
+  <h2 class="section-title">Let's Plan Your New York Trip</h2>
+  <p class="section-sub">Step one is free. See your personalised plan before you ever pay a cent.</p>
+  <a href="#" class="main-cta">Fill Out the Free Form to Get Started →</a>
+  <p class="sub-note">No charge to start &nbsp;·&nbsp; Pay only if you proceed &nbsp;·&nbsp; Only $20</p>
+</div>
+
+<div class="footer">
+  &copy; 2025 New York Day by Day &nbsp;·&nbsp; Custom NYC Itinerary Planning
+</div>
+
+</body>
+</html>
